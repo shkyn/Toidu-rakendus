@@ -1,18 +1,28 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import logo from '../assets/logo.jpg';
 import Button from './UI/Button';
-import { CartContext } from '../store/CartContext'; // Impordime CartContext
+import CartModal from './UI/CartModal';
+import { CartContext } from '../store/CartContext';
 
 const Header = () => {
-  const { items, totalQuantity } = useContext(CartContext); // Kasutame konteksti
-
-  // Logime ostukorvi tooted konsooli iga kord, kui items muutub
-  useEffect(() => {
-    console.log('Cart Items:', items);
-  }, [items]);
+  const { items, totalQuantity, clearCart } = useContext(CartContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCartClick = () => {
-    console.log('Cart button clicked!');
+    setIsModalOpen(true); // Avame modaali
+    console.log('Cart opened. Items in cart:', items); // Logime konsooli
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Sulgeme modaali
+    console.log('Cart closed.'); // Logime konsooli
+  };
+
+  const handleCheckout = () => {
+    alert('Checkout successful! Your order has been placed.');
+    clearCart(); // Tühjendame ostukorvi
+    setIsModalOpen(false); // Sulgeme modaali
+    console.log('Checkout completed. Cart cleared.'); // Logime konsooli
   };
 
   return (
@@ -23,9 +33,25 @@ const Header = () => {
       </div>
       <nav>
         <Button textOnly={true} onClick={handleCartClick}>
-          Cart ({totalQuantity}) {/* Kuvame ostukorvi kogusumma */}
+          Cart ({totalQuantity})
         </Button>
       </nav>
+
+      {isModalOpen && (
+        <CartModal onClose={handleCloseModal} onCheckout={handleCheckout}>
+          <h2>Your Cart</h2>
+          <ul>
+            {items.map((item) => (
+              <li key={item.id}>
+                <h3>{item.name}</h3>
+                <p>Quantity: {item.quantity}</p>
+                <p>Price: ${item.price}</p>
+                <p>Description: {item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </CartModal>
+      )}
     </header>
   );
 };

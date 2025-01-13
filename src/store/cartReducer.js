@@ -1,7 +1,6 @@
 export const cartReducer = (state, action) => {
     switch (action.type) {
       case 'ADD_ITEM':
-        // Kontrollime, kas toode on juba ostukorvis
         const existingItemIndex = state.items.findIndex(
           (item) => item.id === action.payload.id
         );
@@ -10,7 +9,6 @@ export const cartReducer = (state, action) => {
         let updatedItems;
   
         if (existingItem) {
-          // Kui toode on juba ostukorvis, suurendame kogust
           const updatedItem = {
             ...existingItem,
             quantity: existingItem.quantity + 1,
@@ -18,7 +16,6 @@ export const cartReducer = (state, action) => {
           updatedItems = [...state.items];
           updatedItems[existingItemIndex] = updatedItem;
         } else {
-          // Kui toodet pole ostukorvis, lisame selle koos kogusega 1
           const newItem = {
             ...action.payload,
             quantity: 1,
@@ -26,10 +23,15 @@ export const cartReducer = (state, action) => {
           updatedItems = [...state.items, newItem];
         }
   
-        // Tagastame uuendatud seisundi
         return {
           ...state,
           items: updatedItems,
+        };
+  
+      case 'CLEAR_CART':
+        return {
+          ...state,
+          items: [], // Tühjendame ostukorvi
         };
   
       default:

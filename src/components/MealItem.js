@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
 import Button from './UI/Button';
-import { CartContext } from '../store/CartContext'; // Impordime CartContext
+import { CartContext } from '../store/CartContext';
 
 const MealItem = (props) => {
   const { meal } = props;
-  const { addItem } = useContext(CartContext); 
+  const { addItem } = useContext(CartContext);
+
   const handleAddToCart = () => {
-    addItem(meal); 
+    addItem(meal); // Lisame toidu ostukorvi
+    console.log('Added to cart:', meal); // Logime konsooli
   };
 
   return (
