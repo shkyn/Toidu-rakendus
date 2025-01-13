@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import Button from './UI/Button';
+import { CartContext } from '../store/CartContext'; // Impordime CartContext
 
 const MealItem = (props) => {
   const { meal } = props;
+  const { addItem } = useContext(CartContext); // Kasutame konteksti
 
-
-  const formattedPrice = new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(meal.price);
+  const handleAddToCart = () => {
+    addItem(meal); // Lisame toidu ostukorvi
+  };
 
   return (
     <li className="meal-item">
@@ -15,11 +16,13 @@ const MealItem = (props) => {
         <img src={require(`../assets/${meal.image}`)} alt={meal.name} />
         <div>
           <h3>{meal.name}</h3>
-          <p className="meal-item-price">{formattedPrice}</p>
+          <p className="meal-item-price">${meal.price}</p>
           <p className="meal-item-description">{meal.description}</p>
         </div>
         <p className="meal-item-actions">
-          <button className="button">Add to Cart</button>
+          <Button textOnly={false} onClick={handleAddToCart}>
+            Add to Cart
+          </Button>
         </p>
       </article>
     </li>
