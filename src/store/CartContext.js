@@ -1,52 +1,31 @@
-import React, { useState, createContext } from 'react';
+import React, { useReducer, createContext } from 'react';
+import { cartReducer } from './cartReducer'; 
 
-// Loome konteksti
+const initialState = {
+  items: [], 
+};
+
 export const CartContext = createContext({
-  items: [], // Valitud toidud koos kogustega
-  addItem: () => {}, // Funktsioon toidu lisamiseks
-  totalQuantity: 0, // Ostukorvi kogusumma
+  items: [],
+  addItem: () => {},
+  totalQuantity: 0,
 });
 
 // Loome CartContextProvider komponendi
 export const CartContextProvider = ({ children }) => {
-  const [items, setItems] = useState([]); // Hoiame valitud toidud koos kogustega siin
+  const [cartState, dispatch] = useReducer(cartReducer, initialState);
 
-  // Funktsioon toidu lisamiseks
   const addItem = (meal) => {
-    setItems((prevItems) => {
-      // Kontrollime, kas toode on juba ostukorvis
-      const existingItemIndex = prevItems.findIndex((item) => item.id === meal.id);
-      const existingItem = prevItems[existingItemIndex];
-
-      let updatedItems;
-
-      if (existingItem) {
-        // Kui toode on juba ostukorvis, suurendame kogust
-        const updatedItem = {
-          ...existingItem,
-          quantity: existingItem.quantity + 1,
-        };
-        updatedItems = [...prevItems];
-        updatedItems[existingItemIndex] = updatedItem;
-      } else {
-        // Kui toodet pole ostukorvis, lisame selle koos kogusega 1
-        const newItem = {
-          ...meal,
-          quantity: 1,
-        };
-        updatedItems = [...prevItems, newItem];
-      }
-
-      return updatedItems;
-    });
+    dispatch({ type: 'ADD_ITEM', payload: meal });
   };
 
-  // Arvutame ostukorvi kogusumma
-  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalQuantity = cartState.items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
-  // Väärtus, mida kontekst pakub
   const contextValue = {
-    items,
+    items: cartState.items,
     addItem,
     totalQuantity,
   };

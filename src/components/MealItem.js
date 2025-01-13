@@ -4,10 +4,9 @@ import { CartContext } from '../store/CartContext'; // Impordime CartContext
 
 const MealItem = (props) => {
   const { meal } = props;
-  const { addItem } = useContext(CartContext); // Kasutame konteksti
-
+  const { addItem } = useContext(CartContext); 
   const handleAddToCart = () => {
-    addItem(meal); // Lisame toidu ostukorvi
+    addItem(meal); 
   };
 
   return (
